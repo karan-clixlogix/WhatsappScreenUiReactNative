@@ -13,15 +13,15 @@ import RightHeader from './AppHeader';
 class Messages extends React.Component {
 
     render() {
-        console.log('this.props==>', this.props);
-        console.log('this.props==>', this.props.navigation);
-        console.log('this.props==>', this.props.navigation.state);
+        console.log('this.props 12==>', this.props);
+        // console.log('this.props==>', this.props.navigation);
+        // console.log('this.props==>', this.props.navigation.state);
         return (
             <ScrollView style={style.messageContainer}>
                 {
                     messageData.map((data, index) => {
                         return <View key={index}>
-                            <RenderSingleMessage data={data}/>
+                            <RenderSingleMessage data={data} {...this.props}/>
                             <Separator/>
                         </View>
                     })

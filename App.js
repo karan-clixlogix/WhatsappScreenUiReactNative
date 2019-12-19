@@ -24,6 +24,7 @@ import {
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import Root from './src/Root';
+import 'react-native-gesture-handler'
 
 const App: () => React$Node = () => {
     return (

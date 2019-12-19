@@ -1,10 +1,23 @@
-import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import MessageScreen from '../containers/whatsapp/MessageScreen';
 
 const RenderSingleMessage = (props) => {
-    // console.log("==props==>", props.data.avatar);
+    // console.log("==props==>", props);
     let {data} = props;
+    const [showChatModal, setShowChatModal] = useState(false)
+    const chatModalIsVissible = () => {
+        setShowChatModal(!showChatModal)
+    }
+
+    const onTouchChatMessage = () => {
+        chatModalIsVissible(!showChatModal);
+    }
+    const closeMessage = () => {
+        console.log("hello");
+        setShowChatModal(false)
+    }
     return (
         <View style={style.container}>
             <View style={style.imageContainer}>
@@ -17,43 +30,51 @@ const RenderSingleMessage = (props) => {
                     }}
                     style={style.messageImage}/>
             </View>
-            <View style={style.textContainer }>
-                <View style={style.titleContainer}>
-                    <View>
-                        <Text style={style.messageName}>
-                            {data.first_name}{" "}{data.last_name}
-                        </Text>
+            <TouchableHighlight
+                onPress={onTouchChatMessage}>
+                <View style={style.textContainer }>
+                    <View style={style.titleContainer}>
+                        <View>
+                            <Text style={style.messageName}>
+                                {data.first_name}{" "}{data.last_name}
+                            </Text>
+                        </View>
+                        <View>
+                            <Text style={style.messageDate}>
+                                {data.date}
+                            </Text>
+                        </View>
                     </View>
-                    <View>
-                        <Text style={style.messageDate}>
-                            {data.date}
-                        </Text>
-                    </View>
-                </View>
-                <View style={style.titleContainer}>
-                    <View style={{width:'90%'}}>
-                        <Text style={style.messageText}
-                              numberOfLines={1}
-                              ellipsizeMode="tail"
-                        >
-                            {data.message}
-                        </Text>
-                    </View>
-                    <View style={ [style.dateContainer]}>
-                        <View style={style.speakerIcon}>
-                            {
-                                data.notification ?
-                                    <Text/>:
-                                    <IoniconsIcon
-                                        size={25}
-                                        name='ios-notifications-off'
-                                    />
-                            }
-                            {/*ios-notifications-off*/}
+                    <View style={style.titleContainer}>
+                        <View style={{width:'90%'}}>
+                            <Text style={style.messageText}
+                                  numberOfLines={1}
+                                  ellipsizeMode="tail"
+                            >
+                                {data.message}
+                            </Text>
+                        </View>
+                        <View style={ [style.dateContainer]}>
+                            <View style={style.speakerIcon}>
+                                {
+                                    data.notification ?
+                                        <Text/>:
+                                        <IoniconsIcon
+                                            size={25}
+                                            name='ios-notifications-off'
+                                        />
+                                }
+                                {/*ios-notifications-off*/}
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
+            </TouchableHighlight>
+            {
+                showChatModal ?
+                    <MessageScreen show={showChatModal} messageData={data} {...props} closeMessage={closeMessage}/>:
+                    <></>
+            }
         </View>
     )
 };
