@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ImagePicker from 'react-native-image-picker';
 
 
@@ -26,7 +27,7 @@ const MessageScreenFooter = (props) => {
         // More info on all the options is below in the API Reference... just some common use cases shown here
         const options = {
             title: 'Select Avatar',
-            customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+            // customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -62,7 +63,8 @@ const MessageScreenFooter = (props) => {
                 props.setImageData({
                     filePath: response,
                     fileData: response.data,
-                    fileUri: response.uri
+                    fileUri: response.uri,
+                    type: 'image'
                 });
                 setImage({
                     filePath: response,
@@ -102,7 +104,9 @@ const MessageScreenFooter = (props) => {
                 props.setImageData({
                     filePath: response,
                     fileData: response.data,
-                    fileUri: response.uri
+                    fileUri: response.uri,
+                    type: 'image'
+
                 });
                 setImage({
                     filePath: response,
@@ -121,6 +125,23 @@ const MessageScreenFooter = (props) => {
         });
     };
 
+    const [messageText, setMessageText] = useState('')
+
+    const handleChangeText = (value) => {
+        console.log("value==>", value);
+        setMessageText(value);
+    };
+
+    const recordAudio = () => {
+        console.log('recordAudio');
+    };
+
+    const sendMessage = () => {
+        console.log('sendMessage');
+        props.sendMessage(messageText)
+        setMessageText('')
+    };
+
     return (
         <View style={style.footerContainer}>
             <View style={style.chatInputContainer}>
@@ -134,39 +155,91 @@ const MessageScreenFooter = (props) => {
                         style={style.attachmentIcons}
                     />
                 </View>
-                <View style={style.textInputCont}>
+                <View style={style.textInputCont} style={messageText === '' ? {width: '65%'}: {width: '75%'}}>
                     <TextInput
                         placeholder='Type a message'
+                        onChangeText={handleChangeText}
+                        value={messageText}
                     />
                 </View>
-                <View style={style.mediaIcons}>
-                    <TouchableOpacity onPress={attachFile}>
-                        <EntypoIcon
-                            name='attachment'
-                            size={20}
-                            color="#121212"
-                            style={style.attachmentIcons}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={openCamera}>
-                        <FontAwesomeIcon
-                            name='camera'
-                            size={20}
-                            color="#121212"
-                            style={style.attachmentIcons}
-                        />
-                    </TouchableOpacity>
-                </View>
+                {
+                    messageText === '' ?
+                        <View style={style.mediaIcons}>
+                            <TouchableOpacity onPress={attachFile}>
+                                <EntypoIcon
+                                    name='attachment'
+                                    size={20}
+                                    color="#121212"
+                                    style={style.attachmentIcons}
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={openCamera}>
+                                <FontAwesomeIcon
+                                    name='camera'
+                                    size={20}
+                                    color="#121212"
+                                    style={style.attachmentIcons}
+                                />
+                            </TouchableOpacity>
+                        </View>:
+                        <View style={[style.mediaIcons, {width: '10%'}]}>
+                            <TouchableOpacity onPress={attachFile}>
+                                <EntypoIcon
+                                    name='attachment'
+                                    size={20}
+                                    color="#121212"
+                                    style={style.attachmentIcons}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                }
+            </View>
+            {
+                messageText === '' ?
+                    <View style={style.micContainer}>
+                        {/*<FontAwesomeIcon.Button*/}
+                        {/*    name="microphone"*/}
+                        {/*    backgroundColor="#195e53"*/}
+                        {/*    onPress={attachFile}*/}
+                        {/*    size={20}*/}
+                        {/*    borderRadius={20}*/}
+                        {/*    iconStyle={{marginRight: 0}}*/}
+                        {/*>*/}
+                        {/*</FontAwesomeIcon.Button>*/}
 
-            </View>
-            <View style={style.micContainer}>
-                <FontAwesomeIcon
-                    name='microphone'
-                    size={20}
-                    color="#fff"
-                    style={style.micButton}
-                />
-            </View>
+                        <TouchableOpacity onPress={recordAudio}>
+                            <View style={style.micBg}>
+                                <FontAwesomeIcon
+                                    name='microphone'
+                                    size={20}
+                                    color="#fff"
+                                    style={style.micButton}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    </View> :
+                    <View style={style.micContainer}>
+                        {/*<MaterialIcon.Button*/}
+                        {/*    name="play-arrow"*/}
+                        {/*    backgroundColor="#195e53"*/}
+                        {/*    onPress={attachFile}*/}
+                        {/*    size={20}*/}
+                        {/*    borderRadius={20}*/}
+                        {/*    iconStyle={{marginRight: 0}}*/}
+                        {/*>*/}
+                        {/*</MaterialIcon.Button>*/}
+                        <TouchableOpacity onPress={sendMessage}>
+                        <View style={style.micBg}>
+                            <MaterialIcon
+                                name='play-arrow'
+                                size={20}
+                                color="#fff"
+                                style={style.micButton}
+                            />
+                        </View>
+                        </TouchableOpacity>
+                    </View>
+            }
         </View>
     );
 };
@@ -213,13 +286,24 @@ const style = StyleSheet.create({
 
 
     micContainer :{
-        width: '10%',
-        height: 40,
-        backgroundColor: '#195e53',
-        borderRadius: 20,
-        marginLeft: 5,
-        padding: 12
+        width: '11%',
+        height: 50,
+        // backgroundColor: '#195e53',
+        // borderRadius: 20,
+        // marginLeft: 5,
+        padding: 5
 
+    },
+    micBg: {
+        width: 35,
+        height: 35,
+        backgroundColor: '#195e53',
+        borderRadius: 50,
+        justifyContent: 'center',
+        // alignContent: 'center',
+        alignItems: 'center',
+        // marginLeft: 5,
+        // padding: 12
     },
     micButton: {
         alignItems: 'center',

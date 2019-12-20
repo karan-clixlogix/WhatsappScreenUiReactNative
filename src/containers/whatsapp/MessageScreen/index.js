@@ -14,9 +14,24 @@ class MessageScreen extends React.Component{
         }
     }
     setImageData = (imageData) => {
-        // console.log("imageData==>", "imageData");
         let imageDataClone = [...this.state.imageData]
-        imageDataClone.push(imageData)
+        imageDataClone.push(
+            <Image
+                style={style.uploadedImage}
+                source={{uri: 'data:image/jpeg;base64,' + imageData.fileData}} />
+        )
+        this.setState({
+            imageData: imageDataClone
+        });
+    }
+    sendMessage = (messageText) => {
+        console.log("messageText==>", messageText);
+        let imageDataClone = [...this.state.imageData]
+        let singleMessage = <View style={style.singleMsgContainer}>
+            <Text style={style.msgText}>{messageText}</Text>
+        </View>
+
+        imageDataClone.push(singleMessage)
         this.setState({
             imageData: imageDataClone
         });
@@ -25,19 +40,17 @@ class MessageScreen extends React.Component{
     renderUploadedImage = () => {
         let {imageData} = this.state;
         if (imageData !== null){
-            // console.log("==image Path==",  imageData.filePath)
-            // console.log("==image data==",  imageData.fileData)
-            // console.log("==image uri==",  imageData.fileUri)
-            let images = []
-            if ( arrayNotNull(imageData) ) {
-                arrayNotNull(imageData) && imageData.map((obj, index) => {
-                    images.push(<Image style={style.uploadedImage} source={{uri: 'data:image/jpeg;base64,' + obj.fileData}} />)
-                });
 
-                return <View style={style.imagesContainer}>
-                    {images}
-                </View>
-            }
+            let images = [];
+
+            arrayNotNull(imageData) && imageData.map((obj, index) => {
+                images.push(
+                    <View key={index}>
+                        {obj}
+                    </View>
+                )
+            });
+            return images
         }
         return null;
     };
@@ -61,17 +74,17 @@ class MessageScreen extends React.Component{
                         </View>
                         <View style={style.messageContent}>
 
-                            <ScrollView>
+                            <ScrollView style={style.imagesContainer}>
                                 {this.renderUploadedImage()}
                             </ScrollView>
-                            {/*<Text>MessageScreen</Text>*/}
                         </View>
-                        {/*<View style={style.footer}>*/}
-                        {/*    <MessageScreenFooter {...this.props}/>*/}
-                        {/*</View>*/}
                     </View>
                     <View style={style.footer}>
-                        <MessageScreenFooter {...this.props} setImageData={this.setImageData}/>
+                        <MessageScreenFooter
+                            {...this.props}
+                            setImageData={this.setImageData}
+                            sendMessage={this.sendMessage}
+                        />
                     </View>
                 </View>
             </Modal>
@@ -91,7 +104,8 @@ const style = StyleSheet.create({
 
     },
     messageContent: {
-
+        marginTop: 0,
+        marginBottom: 65,
     },
     footer: {
         height: 60,
@@ -101,15 +115,36 @@ const style = StyleSheet.create({
     },
 
     imagesContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         flexWrap: 'wrap'
     },
     uploadedImage: {
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         marginLeft: 10,
-        marginTop: 10,
-
+        marginTop: 5,
+        marginBottom: 5,
+        marginRight: 10,
+        borderWidth: 4,
+        // borderColor: '#DCF8C6',
+        borderColor: '#FFF',
+        borderRadius: 5
+    },
+    singleMsgContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#fff',
+        padding: 2,
+        marginRight: 60,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 10,
+    },
+    msgText: {
+        fontSize: 15,
+        fontWeight: '400',
+        color: '#121212'
     }
 })
 
