@@ -1,68 +1,50 @@
 import React from 'react';
-import {View, Text, Modal, Alert, StyleSheet, TouchableOpacity, Image, TouchableHighlight} from 'react-native';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign'
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import {View, Text, Modal, Alert, StyleSheet, TouchableOpacity,
+    Image,BackHandler, TouchableHighlight, ScrollView} from 'react-native';
+import MessageScreenHeader from './MessageScreenHeader';
+import MessageScreenFooter from './MessageScreenFooter';
+import {arrayNotNull} from '../../../utilities/utilities';
 
-const renderMessageHeader = (props) => {
-    const {messageData} = props;
-    const handleGoBack = () => {
-        console.log("props nav==>", props.navigation.navigate);
-        props.navigation.goBack()
-        props.closeMessage()
-    }
-    console.log("messageData11==>", messageData);
-    return (
-        <View style={style.headerContainer}>
-            <View style={style.arrowIcon}>
-                <TouchableOpacity onPress={handleGoBack}>
-                    <AntDesignIcon
-                        name="arrowleft"
-                        size={30}
-                        color="#fff" />
-                </TouchableOpacity>
-            </View>
-            <View style={style.imageContainer}>
-                <Image
-                    source={{
-                        uri: messageData.avatar,
-                        cache: 'only-if-cached',
-                    }}
-                    style={style.messageImage}/>
-            </View>
-            <View style={style.chatName}>
-                <Text style={style.chatNameText}>
-                    {messageData.first_name}{" "}{messageData.last_name}
-                </Text>
-            </View>
-            <View style={style.leftOptions}>
-                <View style={style.leftIcons}>
-                    <FontAwesomeIcon
-                        style={{marginRight: 20}}
-                        size={20}
-                        name='video-camera'
-                        color="#fff" />
-                    <IoniconsIcon
-                        style={{marginRight: 20}}
-                        size={20}
-                        name='md-call'
-                        color="#fff" />
-                    <EntypoIcon
-                        size={20}
-                        name='dots-three-vertical'
-                        color="#fff"  />
-                </View>
-            </View>
-        </View>
-    )
-}
 class MessageScreen extends React.Component{
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            imageData: []
+        }
+    }
+    setImageData = (imageData) => {
+        // console.log("imageData==>", "imageData");
+        let imageDataClone = [...this.state.imageData]
+        imageDataClone.push(imageData)
+        this.setState({
+            imageData: imageDataClone
+        });
+    }
+
+    renderUploadedImage = () => {
+        let {imageData} = this.state;
+        if (imageData !== null){
+            // console.log("==image Path==",  imageData.filePath)
+            // console.log("==image data==",  imageData.fileData)
+            // console.log("==image uri==",  imageData.fileUri)
+            let images = []
+            if ( arrayNotNull(imageData) ) {
+                arrayNotNull(imageData) && imageData.map((obj, index) => {
+                    images.push(<Image style={style.uploadedImage} source={{uri: 'data:image/jpeg;base64,' + obj.fileData}} />)
+                });
+
+                return <View style={style.imagesContainer}>
+                    {images}
+                </View>
+            }
+        }
+        return null;
+    };
     render(){
         const {messageData, show} = this.props;
-        console.log("messageData==>", messageData);
-        console.log("this.props.navigation==>", this.props.navigation);
+        // console.log("messageData==>", messageData);
+        // console.log("this.props.navigation==>", this.props.navigation);
         return (
             <Modal
                 animationType="slide"
@@ -72,9 +54,25 @@ class MessageScreen extends React.Component{
                 //     Alert.alert("MODAL HAS BEEN CLOSED")
                 // }}
             >
-                <View>
-                    {renderMessageHeader(this.props)}
-                    <Text>MessageScreen</Text>
+                <View style={{flex:1}}>
+                    <View style={style.messageContainer}>
+                        <View style={style.header}>
+                            <MessageScreenHeader {...this.props}/>
+                        </View>
+                        <View style={style.messageContent}>
+
+                            <ScrollView>
+                                {this.renderUploadedImage()}
+                            </ScrollView>
+                            {/*<Text>MessageScreen</Text>*/}
+                        </View>
+                        {/*<View style={style.footer}>*/}
+                        {/*    <MessageScreenFooter {...this.props}/>*/}
+                        {/*</View>*/}
+                    </View>
+                    <View style={style.footer}>
+                        <MessageScreenFooter {...this.props} setImageData={this.setImageData}/>
+                    </View>
                 </View>
             </Modal>
         );
@@ -82,64 +80,37 @@ class MessageScreen extends React.Component{
 };
 
 const style = StyleSheet.create({
-    headerContainer: {
+    messageContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        backgroundColor: '#1d19f6',
         width: '100%',
+        height: '100%'
+    },
+    header: {
+
+    },
+    messageContent: {
+
+    },
+    footer: {
         height: 60,
-        // backgroundColor: '#05110f',
-        backgroundColor: '#195e53',
-        flexDirection: "row",
-        // flexDirection: 'column',
-        justifyContent: 'flex-start'
+        alignSelf: "flex-end",
+        // alignItems: 'baseline',
+        backgroundColor: '#121212'
     },
 
-    arrowIcon : {
-        padding: 10,
-        justifyContent: 'center'
-    },
-
-    imageContainer: {
-        width: 50,
-        height: 50,
-        marginTop: 10
-    },
-    messageImage: {
-        width: 40,
-        height: 40,
-        borderRadius: 50,
-    },
-
-
-
-    titleContainer: {
+    imagesContainer: {
         flexDirection: 'row',
-        // width:'100%',
-        alignItems: 'center',
-        height: '100%',
-        width: '100%'
+        flexWrap: 'wrap'
     },
-    chatName: {
-        justifyContent: 'center'
-    },
-    chatNameText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#fff',
-        justifyContent: 'center'
+    uploadedImage: {
+        width: 100,
+        height: 100,
+        marginLeft: 10,
+        marginTop: 10,
 
-    },
-
-    leftOptions: {
-        // width: '10%',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        alignSelf: 'center',
-        position: 'absolute',
-        right: 0
-    },
-    leftIcons: {
-        flexDirection: 'row',
-        alignSelf: 'flex-end',
-    },
+    }
 })
 
 export default MessageScreen;

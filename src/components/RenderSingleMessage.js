@@ -1,83 +1,97 @@
-import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import React, {Component, useEffect} from 'react';
+import {BackHandler, Image, StyleSheet, Text, TouchableHighlight, View, } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import MessageScreen from '../containers/whatsapp/MessageScreen';
 
-const RenderSingleMessage = (props) => {
-    // console.log("==props==>", props);
-    let {data} = props;
-    const [showChatModal, setShowChatModal] = useState(false)
-    const chatModalIsVissible = () => {
-        setShowChatModal(!showChatModal)
+class RenderSingleMessage extends Component {
+    constructor(props) {
+        super(props);
+        this.state= {
+            showChatModal: false,
+        }
     }
 
-    const onTouchChatMessage = () => {
-        chatModalIsVissible(!showChatModal);
-    }
-    const closeMessage = () => {
-        console.log("hello");
-        setShowChatModal(false)
-    }
-    return (
-        <View style={style.container}>
-            <View style={style.imageContainer}>
-                <Image
-                    // source={require('./../../assets/images/tattoo.jpg')}
-                    // source={props.data.avatar}
-                    source={{
-                        uri: props.data.avatar,
-                        cache: 'only-if-cached',
-                    }}
-                    style={style.messageImage}/>
-            </View>
-            <TouchableHighlight
-                onPress={onTouchChatMessage}>
-                <View style={style.textContainer }>
-                    <View style={style.titleContainer}>
-                        <View>
-                            <Text style={style.messageName}>
-                                {data.first_name}{" "}{data.last_name}
-                            </Text>
+    // componentDidMount() {
+    //     this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    // }
+    //
+    // componentWillUnmount() {
+    //     this.backHandler.remove()
+    // }
+    //
+    // handleBackPress = () => {
+    //     console.log('handleBackPress');
+    //     // this.goBack(); // works best when the goBack is async
+    //     // return true;
+    // }
+
+
+     closeMessage = () => {
+         this.setState({
+             showChatModal: !this.state.showChatModal
+         });
+    };
+    render() {
+        let {data} = this.props;
+        let {showChatModal} = this.state;
+        return (
+            <View style={style.container}>
+                <View style={style.imageContainer}>
+                    <Image
+                        source={{
+                            uri: data.avatar,
+                            cache: 'only-if-cached',
+                        }}
+                        style={style.messageImage}/>
+                </View>
+                <TouchableHighlight
+                    onPress={() => this.closeMessage()}>
+                    <View style={style.textContainer }>
+                        <View style={style.titleContainer}>
+                            <View>
+                                <Text style={style.messageName}>
+                                    {data.first_name}{" "}{data.last_name}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={style.messageDate}>
+                                    {data.date}
+                                </Text>
+                            </View>
                         </View>
-                        <View>
-                            <Text style={style.messageDate}>
-                                {data.date}
-                            </Text>
-                        </View>
-                    </View>
-                    <View style={style.titleContainer}>
-                        <View style={{width:'90%'}}>
-                            <Text style={style.messageText}
-                                  numberOfLines={1}
-                                  ellipsizeMode="tail"
-                            >
-                                {data.message}
-                            </Text>
-                        </View>
-                        <View style={ [style.dateContainer]}>
-                            <View style={style.speakerIcon}>
-                                {
-                                    data.notification ?
-                                        <Text/>:
-                                        <IoniconsIcon
-                                            size={25}
-                                            name='ios-notifications-off'
-                                        />
-                                }
-                                {/*ios-notifications-off*/}
+                        <View style={style.titleContainer}>
+                            <View style={{width:'90%'}}>
+                                <Text style={style.messageText}
+                                      numberOfLines={1}
+                                      ellipsizeMode="tail"
+                                >
+                                    {data.message}
+                                </Text>
+                            </View>
+                            <View style={ [style.dateContainer]}>
+                                <View style={style.speakerIcon}>
+                                    {
+                                        data.notification ?
+                                            <Text/>:
+                                            <IoniconsIcon
+                                                size={25}
+                                                name='ios-notifications-off'
+                                            />
+                                    }
+                                </View>
                             </View>
                         </View>
                     </View>
-                </View>
-            </TouchableHighlight>
-            {
-                showChatModal ?
-                    <MessageScreen show={showChatModal} messageData={data} {...props} closeMessage={closeMessage}/>:
-                    <></>
-            }
-        </View>
-    )
-};
+                </TouchableHighlight>
+                {
+                    showChatModal ?
+                        <MessageScreen show={showChatModal} messageData={data} {...this.props} closeMessage={this.closeMessage}/>:
+                        <></>
+                }
+            </View>
+        )
+    }
+}
 
 const style = StyleSheet.create({
     messageContainer: {
@@ -100,19 +114,9 @@ const style = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 50,
-        // borderColor: "#121212",
-        // borderWidth: 1
-
     },
     textContainer: {
         width:'80%',
-        // marginRight: 20
-        // marginVertical: 8,
-        // borderBottomColor: '#737373',
-        // borderBottomWidth: StyleSheet.hairlineWidth,
-        // marginBottom: 20,
-        // borderBottomColor: 'rgba(18,18,18,0.2)',
-        // borderBottomWidth: 1,
     },
     titleContainer: {
         flexDirection: 'row',
@@ -125,14 +129,9 @@ const style = StyleSheet.create({
         color: '#121212'
     },
     dateContainer: {
-        // width: '20%'
     },
     speakerIcon: {
-        // marginRight: 10,
         right: 10,
-        // top: 0,
-
-
     },
     messageDate: {
         marginTop:7,
@@ -141,11 +140,6 @@ const style = StyleSheet.create({
     messageText:{
         color: '#121212',
         fontSize: 12,
-        // width: '80%'
-        // wordWrap: '',
-        // overflow: 'hidden',
-        // ellipsizeMode: 'tail'
-
     }
 
 });
