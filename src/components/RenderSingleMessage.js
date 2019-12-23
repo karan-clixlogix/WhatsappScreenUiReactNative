@@ -26,10 +26,13 @@ class RenderSingleMessage extends Component {
     // }
 
 
-     closeMessage = () => {
-         this.setState({
-             showChatModal: !this.state.showChatModal
-         });
+    goToMessageScreen = () => {
+         this.props.navigation.navigate('MessageScreen',{
+             data: this.props.data
+         })
+         // this.setState({
+         //     showChatModal: !this.state.showChatModal
+         // });
     };
     render() {
         let {data} = this.props;
@@ -45,7 +48,7 @@ class RenderSingleMessage extends Component {
                         style={style.messageImage}/>
                 </View>
                 <TouchableHighlight
-                    onPress={() => this.closeMessage()}>
+                    onPress={() => this.goToMessageScreen()}>
                     <View style={style.textContainer }>
                         <View style={style.titleContainer}>
                             <View>
@@ -83,11 +86,11 @@ class RenderSingleMessage extends Component {
                         </View>
                     </View>
                 </TouchableHighlight>
-                {
-                    showChatModal ?
-                        <MessageScreen show={showChatModal} messageData={data} {...this.props} closeMessage={this.closeMessage}/>:
-                        <></>
-                }
+                {/*{*/}
+                {/*    showChatModal ?*/}
+                {/*        // <MessageScreen show={showChatModal} messageData={data} {...this.props} closeMessage={this.closeMessage}/>:*/}
+                {/*        <></>*/}
+                {/*}*/}
             </View>
         )
     }

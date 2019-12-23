@@ -13,7 +13,7 @@ import RightHeader from './AppHeader';
 class Messages extends React.Component {
 
     render() {
-        console.log('this.props 12==>', this.props);
+        // console.log('this.props 12==>', this.props);
         // console.log('this.props==>', this.props.navigation);
         // console.log('this.props==>', this.props.navigation.state);
         return (

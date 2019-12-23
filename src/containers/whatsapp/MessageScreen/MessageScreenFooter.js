@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Button} from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -115,8 +115,7 @@ const MessageScreenFooter = (props) => {
                 });
             }
         });
-
-    }
+    };
 
     const openImageLibrary = () => {
 // Open Image Library:
@@ -128,7 +127,7 @@ const MessageScreenFooter = (props) => {
     const [messageText, setMessageText] = useState('')
 
     const handleChangeText = (value) => {
-        console.log("value==>", value);
+        // console.log("value==>", value);
         setMessageText(value);
     };
 
@@ -137,110 +136,109 @@ const MessageScreenFooter = (props) => {
     };
 
     const sendMessage = () => {
-        console.log('sendMessage');
+        // console.log("this.textmsg==>", this.textmsg);
+        // this.textmsg.onBlur();
+        // console.log('sendMessage');
         props.sendMessage(messageText)
         setMessageText('')
     };
 
     return (
-        <View style={style.footerContainer}>
-            <View style={style.chatInputContainer}>
+        <>
+            <View style={style.footerContainer}>
+                <View style={style.chatInputContainer}>
 
-                {/*<Text>MessageScreenFooter</Text>*/}
-                <View style={style.emogiSelector}>
-                    <FontAwesomeIcon
-                        name='smile-o'
-                        size={20}
-                        color="#121212"
-                        style={style.attachmentIcons}
-                    />
-                </View>
-                <View style={style.textInputCont} style={messageText === '' ? {width: '65%'}: {width: '75%'}}>
-                    <TextInput
-                        placeholder='Type a message'
-                        onChangeText={handleChangeText}
-                        value={messageText}
-                    />
+                    {/*<Text>MessageScreenFooter</Text>*/}
+                    <View style={style.emogiSelector}>
+                        <FontAwesomeIcon
+                            name='smile-o'
+                            size={20}
+                            color="#121212"
+                            style={style.attachmentIcons}
+                        />
+                    </View>
+                    <View style={style.textInputCont} style={messageText === '' ? {width: '65%'}: {width: '75%'}}>
+                        <TextInput
+                            // ref={textmsg => this.textmsg = textmsg}
+                            // keyboardType='numeric'
+                            placeholder='Type a message'
+                            onChangeText={handleChangeText}
+                            value={messageText}
+                            // multiline
+                            // numberOfLines={6}
+                        />
+                    </View>
+                    <View style={[style.mediaIcons, {width: `${ messageText === ''  ? "20%": "10%"}`}]}>
+                        <TouchableOpacity onPress={attachFile}>
+                            <EntypoIcon
+                                name='attachment'
+                                size={20}
+                                color="#121212"
+                                style={style.attachmentIcons}
+                            />
+                        </TouchableOpacity>
+                        {
+                            messageText === '' ?
+                                <TouchableOpacity onPress={openCamera}>
+                                    <FontAwesomeIcon
+                                        name='camera'
+                                        size={20}
+                                        color="#121212"
+                                        style={style.attachmentIcons}
+                                    />
+                                </TouchableOpacity> :
+                                <></>
+                        }
+                    </View>
                 </View>
                 {
                     messageText === '' ?
-                        <View style={style.mediaIcons}>
-                            <TouchableOpacity onPress={attachFile}>
-                                <EntypoIcon
-                                    name='attachment'
-                                    size={20}
-                                    color="#121212"
-                                    style={style.attachmentIcons}
-                                />
+                        <View style={style.micContainer}>
+                            {/*<FontAwesomeIcon.Button*/}
+                            {/*    name="microphone"*/}
+                            {/*    backgroundColor="#195e53"*/}
+                            {/*    onPress={recordAudio}*/}
+                            {/*    size={20}*/}
+                            {/*    borderRadius={20}*/}
+                            {/*    iconStyle={{marginRight: 0}}*/}
+                            {/*>*/}
+                            {/*</FontAwesomeIcon.Button>*/}
+
+                            <TouchableOpacity onPress={recordAudio}>
+                                <View style={style.micBg}>
+                                    <FontAwesomeIcon
+                                        name='microphone'
+                                        size={20}
+                                        color="#fff"
+                                        style={style.micButton}
+                                    />
+                                </View>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={openCamera}>
-                                <FontAwesomeIcon
-                                    name='camera'
-                                    size={20}
-                                    color="#121212"
-                                    style={style.attachmentIcons}
-                                />
-                            </TouchableOpacity>
-                        </View>:
-                        <View style={[style.mediaIcons, {width: '10%'}]}>
-                            <TouchableOpacity onPress={attachFile}>
-                                <EntypoIcon
-                                    name='attachment'
-                                    size={20}
-                                    color="#121212"
-                                    style={style.attachmentIcons}
-                                />
+                        </View> :
+                        <View style={style.micContainer}>
+                            {/*<MaterialIcon.Button*/}
+                            {/*    name="play-arrow"*/}
+                            {/*    backgroundColor="#195e53"*/}
+                            {/*    onPress={sendMessage}*/}
+                            {/*    size={20}*/}
+                            {/*    borderRadius={20}*/}
+                            {/*    iconStyle={{marginRight: 0}}*/}
+                            {/*>*/}
+                            {/*</MaterialIcon.Button>*/}
+                            <TouchableOpacity onPress={sendMessage}>
+                                <View style={style.micBg}>
+                                    <MaterialIcon
+                                        name='play-arrow'
+                                        size={20}
+                                        color="#fff"
+                                        style={style.micButton}
+                                    />
+                                </View>
                             </TouchableOpacity>
                         </View>
                 }
             </View>
-            {
-                messageText === '' ?
-                    <View style={style.micContainer}>
-                        {/*<FontAwesomeIcon.Button*/}
-                        {/*    name="microphone"*/}
-                        {/*    backgroundColor="#195e53"*/}
-                        {/*    onPress={attachFile}*/}
-                        {/*    size={20}*/}
-                        {/*    borderRadius={20}*/}
-                        {/*    iconStyle={{marginRight: 0}}*/}
-                        {/*>*/}
-                        {/*</FontAwesomeIcon.Button>*/}
-
-                        <TouchableOpacity onPress={recordAudio}>
-                            <View style={style.micBg}>
-                                <FontAwesomeIcon
-                                    name='microphone'
-                                    size={20}
-                                    color="#fff"
-                                    style={style.micButton}
-                                />
-                            </View>
-                        </TouchableOpacity>
-                    </View> :
-                    <View style={style.micContainer}>
-                        {/*<MaterialIcon.Button*/}
-                        {/*    name="play-arrow"*/}
-                        {/*    backgroundColor="#195e53"*/}
-                        {/*    onPress={attachFile}*/}
-                        {/*    size={20}*/}
-                        {/*    borderRadius={20}*/}
-                        {/*    iconStyle={{marginRight: 0}}*/}
-                        {/*>*/}
-                        {/*</MaterialIcon.Button>*/}
-                        <TouchableOpacity onPress={sendMessage}>
-                        <View style={style.micBg}>
-                            <MaterialIcon
-                                name='play-arrow'
-                                size={20}
-                                color="#fff"
-                                style={style.micButton}
-                            />
-                        </View>
-                        </TouchableOpacity>
-                    </View>
-            }
-        </View>
+        </>
     );
 };
 
@@ -254,7 +252,7 @@ const style = StyleSheet.create({
     chatInputContainer: {
         flexDirection: 'row',
         width: '90%',
-        height: 40,
+        // height: 40,
         backgroundColor: '#fbfbfb',
         borderRadius: 20,
         // margin: 5
@@ -287,7 +285,7 @@ const style = StyleSheet.create({
 
     micContainer :{
         width: '11%',
-        height: 50,
+        // height: 50,
         // backgroundColor: '#195e53',
         // borderRadius: 20,
         // marginLeft: 5,

@@ -6,12 +6,14 @@ import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 const MessageScreenHeader = (props) => {
-    const {messageData} = props;
+    const messageData = props.navigation.state.params.data;
     const handleGoBack = () => {
-        // props.navigation.goBack()
-        props.closeMessage()
+        props.navigation.goBack()
+        // props.closeMessage()
     }
-    console.log("messageData11==>", messageData);
+    // console.log("props==>", props.navigation.param);
+    // console.log("paramsrr==>", props.navigation.state.params.data);
+    // console.log("messageData11==>", messageData);
     return (
         <View style={style.headerContainer}>
             <View style={style.arrowIcon}>

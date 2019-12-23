@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {View, ScrollView, StyleSheet, Text} from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -48,16 +48,32 @@ const MainNavigator = createStackNavigator(
 const MessageStack = createStackNavigator(
     {
         Message: Messages,
-        MessageScreen: MessageScreen
+        MessageScreen: MessageScreen,
     },
     {
-        // initialRouteName: 'Messages',
+        initialRouteName: 'Message',
+        headerMode: 'none'
     }
-)
+);
+
+MessageStack.navigationOptions = ({ navigation }) => {
+
+    let tabBarVisible = true;
+
+    let routeName = navigation.state.routes[navigation.state.index].routeName
+
+    if ( routeName == 'MessageScreen' ) {
+        tabBarVisible = false
+    }
+
+    return {
+        tabBarVisible,
+    }
+};
 
 const TabNavigator = createMaterialTopTabNavigator(
     {
-        Chats: Messages,
+        Chats: MessageStack,
         Status: Signup,
         Calls: Login,
     },
@@ -68,6 +84,7 @@ const TabNavigator = createMaterialTopTabNavigator(
         defaultNavigationOptions: ({ navigation }) => ({
             tabBarIcon: ({ focused, horizontal, tintColor }) => {
                 const { routeName } = navigation.state;
+                console.log("routeName==>", routeName);
                 let IconComponent = Ionicons;
                 let iconName;
                 if (routeName === 'Chats') {
@@ -78,6 +95,7 @@ const TabNavigator = createMaterialTopTabNavigator(
                 } else if (routeName === 'Settings') {
                     iconName = `ios-options`;
                 }
+                console.log("routeName=>", navigation.state.routeName);
 
                 // You can return any component that you like here!
                 return <IconComponent name={iconName} size={25} color={tintColor} />;

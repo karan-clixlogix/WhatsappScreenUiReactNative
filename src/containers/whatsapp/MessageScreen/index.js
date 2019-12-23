@@ -1,6 +1,8 @@
 import React from 'react';
-import {View, Text, Modal, Alert, StyleSheet, TouchableOpacity,
-    Image,BackHandler, TouchableHighlight, ScrollView} from 'react-native';
+import {
+    View, Text, Modal, Alert, StyleSheet, TouchableOpacity,TouchableWithoutFeedback,
+    Image, BackHandler, TouchableHighlight, ScrollView, Button, TextInput,
+} from 'react-native';
 import MessageScreenHeader from './MessageScreenHeader';
 import MessageScreenFooter from './MessageScreenFooter';
 import {arrayNotNull} from '../../../utilities/utilities';
@@ -25,7 +27,9 @@ class MessageScreen extends React.Component{
         });
     }
     sendMessage = (messageText) => {
-        console.log("messageText==>", messageText);
+        console.log("=this.scroll==>", this.scroll);
+        this.scroll.scrollToEnd()
+        // console.log("messageText==>", messageText);
         let imageDataClone = [...this.state.imageData]
         let singleMessage = <View style={style.singleMsgContainer}>
             <Text style={style.msgText}>{messageText}</Text>
@@ -59,14 +63,7 @@ class MessageScreen extends React.Component{
         // console.log("messageData==>", messageData);
         // console.log("this.props.navigation==>", this.props.navigation);
         return (
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={show}
-                // onRequestClose={() => {
-                //     Alert.alert("MODAL HAS BEEN CLOSED")
-                // }}
-            >
+            <>
                 <View style={{flex:1}}>
                     <View style={style.messageContainer}>
                         <View style={style.header}>
@@ -74,7 +71,12 @@ class MessageScreen extends React.Component{
                         </View>
                         <View style={style.messageContent}>
 
-                            <ScrollView style={style.imagesContainer}>
+                            <ScrollView
+                                style={style.imagesContainer}
+                                // bounces={true}
+                                // alwaysBounce={true}
+                                ref={(node) => this.scroll = node}
+                            >
                                 {this.renderUploadedImage()}
                             </ScrollView>
                         </View>
@@ -87,7 +89,7 @@ class MessageScreen extends React.Component{
                         />
                     </View>
                 </View>
-            </Modal>
+            </>
         );
     }
 };
@@ -108,7 +110,7 @@ const style = StyleSheet.create({
         marginBottom: 65,
     },
     footer: {
-        height: 60,
+        // height: 60,
         alignSelf: "flex-end",
         // alignItems: 'baseline',
         backgroundColor: '#121212'
